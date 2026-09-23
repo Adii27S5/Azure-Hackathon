@@ -1,0 +1,12 @@
+{
+  "name": "azure-ecom-frontend",
+  "version": "1.0.0",
+  "description": "Production-like eCommerce Storefront for Azure Load Testing Capacity Study",
+  "main": "index.html",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
