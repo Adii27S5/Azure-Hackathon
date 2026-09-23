@@ -1,6 +1,25 @@
 # Azure Load Testing for a Web Application Capacity Study
 
-Project ID: 24CC3046-P056
+## Team Details
+
+| Field | Details |
+|---|---|
+| Project ID | 24CC3046-P056 |
+| Team Name | T158 |
+| Project Name | Azure Load Testing for a Web Application Capacity Study |
+| Problem Statement | Determine the breaking point of the current application sizing and recommend a suitable scaling configuration using Azure Load Testing and Azure monitoring services. |
+| Team Size | 4 Members |
+
+### Team Members
+
+| S. No. | Student ID | Name |
+|---|---|---|
+| 1 | 2400032012 | KORADA TEJA |
+| 2 | 2400032102 | GUBBALA LAKSHMI SAI TEJA |
+| 3 | 2400032152 | ADITYA SINGH |
+| 4 | 2400032605 | GOLLA MANIKANTA |
+
+---
 
 This repository contains the Azure capacity-study implementation, load-testing artifacts, technical documentation, presentation, and abstract for the hackathon project.
 
