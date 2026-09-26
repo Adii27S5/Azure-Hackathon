@@ -44,6 +44,10 @@ jobs:
     needs: build-and-test
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
+    env:
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v4
@@ -52,24 +56,16 @@ jobs:
           path: ./app-deploy
 
       - name: Authenticate to Azure via OIDC
+        if: env.AZURE_CLIENT_ID != ''
         uses: azure/login@v2
-        if: ${{ secrets.AZURE_CLIENT_ID != '' }}
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Deploy to Azure Web App (OIDC)
+        if: env.AZURE_CLIENT_ID != ''
         uses: azure/webapps-deploy@v3
-        if: ${{ secrets.AZURE_CLIENT_ID != '' }}
         with:
           app-name: 'capacity-web-node'
-          package: './app-deploy'
-
-      - name: Deploy to Azure Web App (Publish Profile)
-        uses: azure/webapps-deploy@v3
-        if: ${{ secrets.AZURE_CLIENT_ID == '' && secrets.AZURE_WEBAPP_PUBLISH_PROFILE != '' }}
-        with:
-          app-name: 'capacity-web-node'
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: './app-deploy'
