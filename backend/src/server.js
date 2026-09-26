@@ -44,7 +44,6 @@ const serverStartTime = Date.now();
 
 app.use((req, res, next) => {
   totalRequestsServed++;
-  const start = Date.now();
   res.on('finish', () => {
     if (res.statusCode >= 500) {
       totalErrorsEncountered++;
@@ -54,7 +53,7 @@ app.use((req, res, next) => {
 });
 
 // ==========================================
-// 1. GET /health (PHASE 2 REQUIREMENT)
+// 1. GET /health
 // ==========================================
 app.get('/health', async (req, res) => {
   let dbStatus = 'ok';
@@ -65,6 +64,19 @@ app.get('/health', async (req, res) => {
   }
 
   const memoryUsage = process.memoryUsage();
+  const isHealthy = dbStatus === 'ok';
+
+  if (!isHealthy && db.type === 'postgres') {
+    return res.status(503).json({
+      status: 'error',
+      database: {
+        type: db.type,
+        status: 'disconnected'
+      },
+      error: 'Database connection failed'
+    });
+  }
+
   res.status(200).json({
     status: 'healthy',
     timestamp: new Date().toISOString(),
@@ -73,7 +85,7 @@ app.get('/health', async (req, res) => {
     hostname: process.env.COMPUTERNAME || require('os').hostname(),
     database: {
       type: db.type,
-      status: dbStatus
+      status: isHealthy ? 'connected' : 'disconnected'
     },
     metrics: {
       totalRequests: totalRequestsServed,
@@ -237,12 +249,12 @@ app.post('/api/orders', async (req, res) => {
     });
     total = parseFloat(total.toFixed(2));
 
-    const orderRes = await db.query(
-      'INSERT INTO orders (user_id, total_amount, status) VALUES (?, ?, ?)',
-      [userId, total, 'completed']
-    );
+    const insertSql = db.type === 'postgres'
+      ? 'INSERT INTO orders (user_id, total_amount, status) VALUES (?, ?, ?) RETURNING id'
+      : 'INSERT INTO orders (user_id, total_amount, status) VALUES (?, ?, ?)';
 
-    const orderId = orderRes.lastInsertRowid || Math.floor(Math.random() * 100000);
+    const orderRes = await db.query(insertSql, [userId, total, 'completed']);
+    const orderId = (orderRes.rows && orderRes.rows[0] && orderRes.rows[0].id) || orderRes.lastInsertRowid || Math.floor(Math.random() * 100000);
 
     for (const item of items) {
       await db.query(
@@ -271,15 +283,12 @@ app.get('/api/heavy-operation', (req, res) => {
   const iterations = parseInt(req.query.iterations || '15000', 10);
   const start = Date.now();
 
-  // Controlled CPU-intensive cryptographic / hashing loop
   let hash = 'seed';
   for (let i = 0; i < iterations; i++) {
     hash = crypto.createHash('sha256').update(hash + i).digest('hex');
   }
 
-  // Memory buffer allocation
   const buffer = Buffer.alloc(1024 * 64, 'a');
-
   const durationMs = Date.now() - start;
 
   res.json({
@@ -293,22 +302,33 @@ app.get('/api/heavy-operation', (req, res) => {
   });
 });
 
-// Initialize database schema and auto-seed if empty
-initSchema()
-  .then(() => seed())
-  .then(() => {
-    app.listen(PORT, () => {
-      console.log(`=======================================================`);
-      console.log(`Azure Capacity Study Web App running on port ${PORT}`);
-      console.log(`Health endpoint: http://localhost:${PORT}/health`);
-      console.log(`=======================================================`);
-    });
-  })
-  .catch(err => {
+async function startServer(port = PORT) {
+  try {
+    await initSchema();
+    await seed();
+  } catch (err) {
     console.error('Failed to initialize database during startup:', err);
-    app.listen(PORT, () => {
-      console.log(`App started on port ${PORT} with fallback mode.`);
+  }
+
+  return new Promise((resolve, reject) => {
+    const server = app.listen(port, () => {
+      const actualPort = server.address().port;
+      console.log(`=======================================================`);
+      console.log(`Azure Capacity Study Web App running on port ${actualPort}`);
+      console.log(`Health endpoint: http://localhost:${actualPort}/health`);
+      console.log(`=======================================================`);
+      resolve(server);
     });
+    server.on('error', reject);
   });
+}
+
+if (require.main === module) {
+  startServer().catch(err => {
+    console.error('Failed to start server:', err);
+    process.exit(1);
+  });
+}
 
 module.exports = app;
+module.exports.startServer = startServer;

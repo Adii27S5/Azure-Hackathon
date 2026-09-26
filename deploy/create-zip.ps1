@@ -1,5 +1,5 @@
 # Packaging script for Azure App Service Zip Deploy
-$sourceFiles = @("src", "public", "package.json", "package-lock.json", "node_modules")
+$sourceFiles = @("service.js", "src", "public", "package.json", "package-lock.json", "node_modules")
 $zipPath = "deploy\app-package.zip"
 
 if (Test-Path $zipPath) {

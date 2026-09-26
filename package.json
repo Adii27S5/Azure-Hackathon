@@ -2,10 +2,10 @@
   "name": "app-capacity-study",
   "version": "1.0.0",
   "description": "Production-like web application for Azure Load Testing Capacity Study (Project ID: 24CC3046-P056)",
-  "main": "src/server.js",
+  "main": "service.js",
   "scripts": {
-    "start": "node src/server.js",
-    "dev": "node --watch src/server.js",
+    "start": "node service.js",
+    "dev": "node --watch service.js",
     "seed": "node src/database/seed.js",
     "test": "node test/api.test.js"
   },
