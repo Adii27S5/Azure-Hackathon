@@ -119,6 +119,127 @@
     </div>
   </div>
 
+  <!-- Telemetry & Capacity Modal -->
+  <div class="telemetry-modal" id="telemetryModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 24px;">☁️</span>
+          <div>
+            <h3>Azure Cloud Infrastructure Telemetry</h3>
+            <p style="font-size: 12px; color: var(--text-muted);">Project ID: 24CC3046-P056 • Resource Group: rg-loadtest (Central India)</p>
+          </div>
+        </div>
+        <button class="close-btn" id="closeModalBtn">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Live Node Telemetry -->
+        <div class="telemetry-grid">
+          <div class="telemetry-box">
+            <span class="box-label">App Service URL</span>
+            <span class="box-val mono" id="modalHostVal">app-loadtest-101.azurewebsites.net</span>
+          </div>
+          <div class="telemetry-box">
+            <span class="box-label">Instance Hash</span>
+            <span class="box-val mono" id="modalInstanceVal">--</span>
+          </div>
+          <div class="telemetry-box">
+            <span class="box-label">PostgreSQL Database</span>
+            <span class="box-val" id="modalDbVal" style="color: #4ade80;">Connected (Flexible Server)</span>
+          </div>
+          <div class="telemetry-box">
+            <span class="box-label">Round-Trip Latency</span>
+            <span class="box-val mono" id="modalLatencyVal">-- ms</span>
+          </div>
+          <div class="telemetry-box">
+            <span class="box-label">Server Uptime</span>
+            <span class="box-val mono" id="modalUptimeVal">-- s</span>
+          </div>
+          <div class="telemetry-box">
+            <span class="box-label">Process Memory</span>
+            <span class="box-val mono" id="modalMemoryVal">-- MB</span>
+          </div>
+        </div>
+
+        <!-- Empirical Load Test Summary -->
+        <div class="study-card">
+          <h4>Azure Load Testing Capacity Findings</h4>
+          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 10px;">
+            Simulated 10 to 500 concurrent virtual users using Apache JMeter on Azure Load Testing (<span class="mono">alt-loadtest-101</span>).
+          </p>
+          <div class="results-table-wrap">
+            <table class="mini-table">
+              <thead>
+                <tr>
+                  <th>Run ID</th>
+                  <th>Users</th>
+                  <th>RPS</th>
+                  <th>Avg Latency</th>
+                  <th>CPU %</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>run-1-baseline</td>
+                  <td>10</td>
+                  <td>110.7</td>
+                  <td>194 ms</td>
+                  <td>17.7%</td>
+                  <td><span class="badge-pass">PASS</span></td>
+                </tr>
+                <tr>
+                  <td>run-3-medium</td>
+                  <td>100</td>
+                  <td>178.8</td>
+                  <td>1,082 ms</td>
+                  <td>58.2%</td>
+                  <td><span class="badge-pass">SAFE KNEE</span></td>
+                </tr>
+                <tr>
+                  <td>run-5-stress</td>
+                  <td>500</td>
+                  <td>192.2</td>
+                  <td>5,246 ms</td>
+                  <td>96.4%</td>
+                  <td><span class="badge-break">BREAKING POINT</span></td>
+                </tr>
+                <tr>
+                  <td>run-6-scaled-2inst</td>
+                  <td>500 (2x)</td>
+                  <td>149.8</td>
+                  <td>3,742 ms</td>
+                  <td>49.1%</td>
+                  <td><span class="badge-relieved">CPU RELIEVED</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Interactive Benchmark Section -->
+        <div class="benchmark-box">
+          <div>
+            <div style="font-weight: 600; font-size: 14px;">Trigger CPU Stressor (/api/heavy-operation)</div>
+            <div style="font-size: 12px; color: var(--text-muted);">Executes 50,000 cryptographic hash cycles on the active container</div>
+          </div>
+          <button class="benchmark-btn" id="runBenchmarkBtn">Run Live Benchmark</button>
+        </div>
+        <div id="benchmarkResult" class="benchmark-output" style="display: none;"></div>
+
+        <!-- Backend Target Switcher -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border-card);">
+          <span style="font-size: 12px; color: var(--text-muted);">Active Backend Target:</span>
+          <select id="targetSwitcher" class="sort-select" style="padding: 4px 10px; font-size: 12px;">
+            <option value="azure">Azure Cloud (app-loadtest-101)</option>
+            <option value="local">Localhost (http://localhost:8080)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Footer -->
   <footer>
     <p>Azure Capacity Study & Load Testing Hackathon Demo | Project ID: 24CC3046-P056</p>

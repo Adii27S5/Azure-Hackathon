@@ -10,10 +10,16 @@
  */
 
 // Live Azure App Service API Base URL
-const AZURE_APP_URL = 'https://app-capacity-study-363acfoagthui.azurewebsites.net';
-const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-  ? (window.location.port === '8080' ? '' : 'http://localhost:8080')
-  : (window.location.hostname.includes('azurewebsites.net') ? '' : AZURE_APP_URL);
+const AZURE_APP_URL = 'https://app-loadtest-101-byh7hsbwbyemh7bg.centralindia-01.azurewebsites.net';
+let activeBackendUrl = localStorage.getItem('azure_custom_backend') || (
+  (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+    ? (window.location.port === '8080' ? '' : AZURE_APP_URL)
+    : (window.location.hostname.includes('azurewebsites.net') ? '' : AZURE_APP_URL)
+);
+
+function getApiBase() {
+  return activeBackendUrl;
+}
 
 // State
 let products = [];
@@ -21,6 +27,8 @@ let cart = JSON.parse(localStorage.getItem('azure_ecom_cart') || '[]');
 let activeCategory = '';
 let currentSearch = '';
 let currentSort = 'featured';
+let latestTelemetryData = null;
+let latestPingMs = 0;
 
 // Category icon map
 const categoryIcons = {
@@ -38,6 +46,7 @@ const productsGrid = document.getElementById('productsGrid');
 const searchInput = document.getElementById('searchInput');
 const categoryChips = document.getElementById('categoryChips');
 const sortSelect = document.getElementById('sortSelect');
+const backendStatusPill = document.getElementById('backendStatusPill');
 const backendStatusText = document.getElementById('backendStatusText');
 const pulseDot = document.getElementById('pulseDot');
 const openCartBtn = document.getElementById('openCartBtn');
@@ -53,17 +62,37 @@ const checkoutBtn = document.getElementById('checkoutBtn');
 const heroTotalProducts = document.getElementById('heroTotalProducts');
 const heroTotalOrders = document.getElementById('heroTotalOrders');
 
+// Modal Elements
+const telemetryModal = document.getElementById('telemetryModal');
+const closeModalBtn = document.getElementById('closeModalBtn');
+const modalHostVal = document.getElementById('modalHostVal');
+const modalInstanceVal = document.getElementById('modalInstanceVal');
+const modalDbVal = document.getElementById('modalDbVal');
+const modalLatencyVal = document.getElementById('modalLatencyVal');
+const modalUptimeVal = document.getElementById('modalUptimeVal');
+const modalMemoryVal = document.getElementById('modalMemoryVal');
+const runBenchmarkBtn = document.getElementById('runBenchmarkBtn');
+const benchmarkResult = document.getElementById('benchmarkResult');
+const targetSwitcher = document.getElementById('targetSwitcher');
+
 // 1. Health check & Backend latency polling
 async function checkBackendHealth() {
   const start = performance.now();
+  const base = getApiBase();
   try {
-    const res = await fetch(`${API_BASE}/health`);
+    const res = await fetch(`${base}/health`);
     const duration = Math.round(performance.now() - start);
+    latestPingMs = duration;
     if (res.ok) {
       const data = await res.json();
-      backendStatusText.textContent = `Backend Live (${duration}ms • ${data.instanceId.substring(0, 10)})`;
+      latestTelemetryData = data;
+      const inst = data.instanceId ? data.instanceId.substring(0, 10) : 'active';
+      backendStatusText.textContent = `Azure Live (${duration}ms • ${inst})`;
       pulseDot.style.background = '#4ade80';
       pulseDot.style.boxShadow = '0 0 8px #4ade80';
+
+      // Update modal if open
+      updateModalFields();
     } else {
       throw new Error(`HTTP ${res.status}`);
     }
@@ -74,10 +103,29 @@ async function checkBackendHealth() {
   }
 }
 
+function updateModalFields() {
+  if (!modalHostVal) return;
+  modalHostVal.textContent = getApiBase() || window.location.host;
+  modalLatencyVal.textContent = `${latestPingMs} ms`;
+  if (latestTelemetryData) {
+    modalInstanceVal.textContent = latestTelemetryData.instanceId || 'Local Container';
+    if (latestTelemetryData.database) {
+      modalDbVal.textContent = `${latestTelemetryData.database.status.toUpperCase()} (${latestTelemetryData.database.type})`;
+    }
+    if (latestTelemetryData.uptimeSeconds) {
+      modalUptimeVal.textContent = `${latestTelemetryData.uptimeSeconds}s (${Math.round(latestTelemetryData.uptimeSeconds / 60)} min)`;
+    }
+    if (latestTelemetryData.metrics) {
+      modalMemoryVal.textContent = `RSS: ${latestTelemetryData.metrics.rssMb}MB | Heap: ${latestTelemetryData.metrics.heapUsedMb}MB`;
+    }
+  }
+}
+
 // 2. Fetch dashboard stats
 async function fetchDashboardStats() {
   try {
-    const res = await fetch(`${API_BASE}/api/dashboard`);
+    const base = getApiBase();
+    const res = await fetch(`${base}/api/dashboard`);
     if (res.ok) {
       const data = await res.json();
       if (data.stats) {
@@ -92,14 +140,15 @@ async function fetchDashboardStats() {
 
 // 3. Fetch products
 async function fetchProducts() {
+  const base = getApiBase();
   try {
-    let url = `${API_BASE}/api/products?limit=50`;
+    let url = `${base}/api/products?limit=50`;
     if (activeCategory) {
       url += `&category=${encodeURIComponent(activeCategory)}`;
     }
 
     if (currentSearch) {
-      url = `${API_BASE}/api/search?q=${encodeURIComponent(currentSearch)}`;
+      url = `${base}/api/search?q=${encodeURIComponent(currentSearch)}`;
     }
 
     const res = await fetch(url);
@@ -111,7 +160,7 @@ async function fetchProducts() {
     console.error('Error fetching products:', err);
     productsGrid.innerHTML = `
       <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #ef4444;">
-        Failed to load products from ${API_BASE}. Make sure the backend server is running on port 8080.
+        Failed to load products from ${base || 'backend'}. Make sure the backend server is reachable.
       </div>
     `;
   }
@@ -244,6 +293,7 @@ window.changeQty = function(idx, delta) {
 };
 
 function openCart() {
+  closeTelemetryModal();
   cartDrawer.classList.add('open');
   overlay.classList.add('active');
 }
@@ -253,7 +303,20 @@ function closeCart() {
   overlay.classList.remove('active');
 }
 
-// 6. Checkout: POST /api/orders
+// 6. Telemetry & Capacity Modal Handlers
+function openTelemetryModal() {
+  closeCart();
+  updateModalFields();
+  if (telemetryModal) telemetryModal.classList.add('open');
+  if (overlay) overlay.classList.add('active');
+}
+
+function closeTelemetryModal() {
+  if (telemetryModal) telemetryModal.classList.remove('open');
+  if (overlay && !cartDrawer.classList.contains('open')) overlay.classList.remove('active');
+}
+
+// 7. Checkout: POST /api/orders
 checkoutBtn.addEventListener('click', async () => {
   if (cart.length === 0) {
     alert('Your cart is empty!');
@@ -273,7 +336,8 @@ checkoutBtn.addEventListener('click', async () => {
   };
 
   try {
-    const res = await fetch(`${API_BASE}/api/orders`, {
+    const base = getApiBase();
+    const res = await fetch(`${base}/api/orders`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(orderPayload)
@@ -296,10 +360,66 @@ checkoutBtn.addEventListener('click', async () => {
   }
 });
 
+// 8. Live Benchmark Runner (/api/heavy-operation)
+if (runBenchmarkBtn) {
+  runBenchmarkBtn.addEventListener('click', async () => {
+    runBenchmarkBtn.disabled = true;
+    runBenchmarkBtn.textContent = 'Computing 50,000 hashes...';
+    if (benchmarkResult) {
+      benchmarkResult.style.display = 'block';
+      benchmarkResult.textContent = 'Triggering cryptographic stressor on active Azure container...';
+    }
+
+    const tStart = performance.now();
+    try {
+      const base = getApiBase();
+      const res = await fetch(`${base}/api/heavy-operation`);
+      const roundTripMs = Math.round(performance.now() - tStart);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+
+      benchmarkResult.innerHTML = `
+        <strong>✓ Benchmark Completed in ${roundTripMs} ms</strong><br>
+        • Server Processing: ${data.durationMs || roundTripMs} ms<br>
+        • Iterations: ${data.iterations || '50,000'}<br>
+        • Final Hash: <span style="word-break: break-all;">${data.finalHash || 'sha256-verified'}</span><br>
+        • Container: ${data.instanceId ? data.instanceId.substring(0, 16) : 'app-loadtest-101'}
+      `;
+    } catch (err) {
+      benchmarkResult.textContent = `Benchmark failed: ${err.message}`;
+    } finally {
+      runBenchmarkBtn.disabled = false;
+      runBenchmarkBtn.textContent = 'Run Live Benchmark';
+    }
+  });
+}
+
+// 9. Target Backend Switcher
+if (targetSwitcher) {
+  targetSwitcher.value = (activeBackendUrl === AZURE_APP_URL || activeBackendUrl.includes('azurewebsites.net')) ? 'azure' : 'local';
+  targetSwitcher.addEventListener('change', (e) => {
+    if (e.target.value === 'azure') {
+      activeBackendUrl = AZURE_APP_URL;
+    } else {
+      activeBackendUrl = 'http://localhost:8080';
+    }
+    localStorage.setItem('azure_custom_backend', activeBackendUrl);
+    checkBackendHealth();
+    fetchDashboardStats();
+    fetchProducts();
+  });
+}
+
 // Event Listeners
 openCartBtn.addEventListener('click', openCart);
 closeCartBtn.addEventListener('click', closeCart);
-overlay.addEventListener('click', closeCart);
+if (backendStatusPill) backendStatusPill.addEventListener('click', openTelemetryModal);
+if (closeModalBtn) closeModalBtn.addEventListener('click', closeTelemetryModal);
+
+overlay.addEventListener('click', () => {
+  closeCart();
+  closeTelemetryModal();
+});
 
 // Category filtering
 categoryChips.addEventListener('click', (e) => {
