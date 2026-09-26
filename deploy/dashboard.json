@@ -17,8 +17,8 @@
               "content": {
                 "settings": {
                   "title": "Azure Capacity Study Dashboard (Project 24CC3046-P056)",
-                  "subtitle": "Microsoft Azure Cloud Load Testing & Performance Optimization",
-                  "content": "## Project ID: 24CC3046-P056 — Azure Load Testing for a Web Application Capacity Study\n\n### All 8 Core Azure Services In This Project:\n1. **Azure App Service**: `app-capacity-study-363acfoagthui` (Hosts eCommerce Application, Node 22 LTS)\n2. **App Service Plan**: `asp-capacity-study-363acfoagthui` (Standard S1 Compute Resource, 1 to 4 instances)\n3. **Azure Load Testing**: `alt-capacity-study-363acfoagthui` (Managed JMeter Multi-Threaded Engine)\n4. **Application Insights**: `appi-capacity-study-363acfoagthui` (Request, Latency & Error Telemetry)\n5. **Azure Monitor**: Metrics collection & alerting across all compute resources\n6. **Azure Autoscale**: `autoscale-asp-capacity-study-363acfoagthui` (Scale-out at CPU > 70%, Scale-in at CPU < 30%)\n7. **Azure Database for PostgreSQL**: Flexible Server `psql-capacity-study-363acfoagthui` (Live connected via `DATABASE_URL`)\n8. **Log Analytics Workspace**: `law-capacity-study-363acfoagthui` (Centralized Log Aggregation)\n\n**Live App URL:** https://app-capacity-study-363acfoagthui.azurewebsites.net  \n**Live Health Probe:** https://app-capacity-study-363acfoagthui.azurewebsites.net/health"
+                  "subtitle": "Microsoft Azure Cloud Load Testing & Empirical Capacity Analysis",
+                  "content": "## Project ID: 24CC3046-P056 \u2014 Azure Load Testing for a Web Application Capacity Study\n\n### Verified Production Resources in Resource Group `rg-loadtest` (Central India):\n1. **Azure App Service**: `app-loadtest-101` (Node.js 24 LTS, Linux)\n2. **App Service Plan**: `plan-loadtest` (Standard S1: 1 vCPU, 1.75 GB RAM, Autoscale 1-4 instances)\n3. **PostgreSQL Flexible Server**: `app-loadtest-101-server` (VNet Integrated, Private DNS)\n4. **Azure Load Testing**: `alt-loadtest-101` (Apache JMeter Distributed Test: `capacity-study-test`)\n5. **Application Insights**: `appi-loadtest-101` (APM, Live Metrics, Dependency Telemetry)\n6. **Azure Autoscale**: `autoscale-plan-loadtest` (Scale-out at CPU > 70%, Scale-in at CPU < 30%)\n7. **Virtual Network**: `vnet-qkjgcmgm` (Subnets: `subnet-aaahsuqi` for App, `subnet-ejdigsdaswpw4` for DB)\n8. **Log Analytics Workspace**: `law-loadtest-101` (Log Ingestion)\n\n**Live App URL:** https://app-loadtest-101-byh7hsbwbyemh7bg.centralindia-01.azurewebsites.net  \n**Live Health Probe:** https://app-loadtest-101-byh7hsbwbyemh7bg.centralindia-01.azurewebsites.net/health"
                 }
               }
             }
@@ -37,8 +37,8 @@
                 "name": "ComponentId",
                 "value": {
                   "SubscriptionId": "e6d4fcf4-96d4-4e9c-a00e-929a1c623bb4",
-                  "ResourceGroup": "rg-loadtest-capacity-study",
-                  "Name": "asp-capacity-study-363acfoagthui"
+                  "ResourceGroup": "rg-loadtest",
+                  "Name": "plan-loadtest"
                 }
               }
             ],
@@ -47,18 +47,18 @@
               "content": {
                 "version": "1.0",
                 "chartType": 2,
-                "title": "Compute Infrastructure — CPU & Memory %",
+                "title": "App Service Plan \u2014 CPU & Memory %",
                 "metrics": [
                   {
                     "resourceMetadata": {
-                      "id": "/subscriptions/e6d4fcf4-96d4-4e9c-a00e-929a1c623bb4/resourceGroups/rg-loadtest-capacity-study/providers/Microsoft.Web/serverFarms/asp-capacity-study-363acfoagthui"
+                      "id": "/subscriptions/e6d4fcf4-96d4-4e9c-a00e-929a1c623bb4/resourceGroups/rg-loadtest/providers/Microsoft.Web/serverFarms/plan-loadtest"
                     },
                     "name": "CpuPercentage",
                     "aggregationType": 4
                   },
                   {
                     "resourceMetadata": {
-                      "id": "/subscriptions/e6d4fcf4-96d4-4e9c-a00e-929a1c623bb4/resourceGroups/rg-loadtest-capacity-study/providers/Microsoft.Web/serverFarms/asp-capacity-study-363acfoagthui"
+                      "id": "/subscriptions/e6d4fcf4-96d4-4e9c-a00e-929a1c623bb4/resourceGroups/rg-loadtest/providers/Microsoft.Web/serverFarms/plan-loadtest"
                     },
                     "name": "MemoryPercentage",
                     "aggregationType": 4
@@ -81,8 +81,8 @@
                 "name": "ComponentId",
                 "value": {
                   "SubscriptionId": "e6d4fcf4-96d4-4e9c-a00e-929a1c623bb4",
-                  "ResourceGroup": "rg-loadtest-capacity-study",
-                  "Name": "app-capacity-study-363acfoagthui"
+                  "ResourceGroup": "rg-loadtest",
+                  "Name": "app-loadtest-101"
                 }
               }
             ],
@@ -91,21 +91,28 @@
               "content": {
                 "version": "1.0",
                 "chartType": 2,
-                "title": "App Service — Requests & Active Instance Count",
+                "title": "Web App Requests & Average Response Time",
                 "metrics": [
                   {
                     "resourceMetadata": {
-                      "id": "/subscriptions/e6d4fcf4-96d4-4e9c-a00e-929a1c623bb4/resourceGroups/rg-loadtest-capacity-study/providers/Microsoft.Web/sites/app-capacity-study-363acfoagthui"
+                      "id": "/subscriptions/e6d4fcf4-96d4-4e9c-a00e-929a1c623bb4/resourceGroups/rg-loadtest/providers/Microsoft.Web/sites/app-loadtest-101"
                     },
                     "name": "Requests",
                     "aggregationType": 1
                   },
                   {
                     "resourceMetadata": {
-                      "id": "/subscriptions/e6d4fcf4-96d4-4e9c-a00e-929a1c623bb4/resourceGroups/rg-loadtest-capacity-study/providers/Microsoft.Web/sites/app-capacity-study-363acfoagthui"
+                      "id": "/subscriptions/e6d4fcf4-96d4-4e9c-a00e-929a1c623bb4/resourceGroups/rg-loadtest/providers/Microsoft.Web/sites/app-loadtest-101"
                     },
-                    "name": "InstanceCount",
+                    "name": "AverageResponseTime",
                     "aggregationType": 4
+                  },
+                  {
+                    "resourceMetadata": {
+                      "id": "/subscriptions/e6d4fcf4-96d4-4e9c-a00e-929a1c623bb4/resourceGroups/rg-loadtest/providers/Microsoft.Web/sites/app-loadtest-101"
+                    },
+                    "name": "Http5xx",
+                    "aggregationType": 1
                   }
                 ]
               }
@@ -125,8 +132,8 @@
                 "name": "ComponentId",
                 "value": {
                   "SubscriptionId": "e6d4fcf4-96d4-4e9c-a00e-929a1c623bb4",
-                  "ResourceGroup": "rg-loadtest-capacity-study",
-                  "Name": "app-capacity-study-363acfoagthui"
+                  "ResourceGroup": "rg-loadtest",
+                  "Name": "appi-loadtest-101"
                 }
               }
             ],
@@ -135,20 +142,20 @@
               "content": {
                 "version": "1.0",
                 "chartType": 2,
-                "title": "App Service — Response Time & HTTP 5xx Server Errors",
+                "title": "Application Insights \u2014 Request Rate & Failed Requests",
                 "metrics": [
                   {
                     "resourceMetadata": {
-                      "id": "/subscriptions/e6d4fcf4-96d4-4e9c-a00e-929a1c623bb4/resourceGroups/rg-loadtest-capacity-study/providers/Microsoft.Web/sites/app-capacity-study-363acfoagthui"
+                      "id": "/subscriptions/e6d4fcf4-96d4-4e9c-a00e-929a1c623bb4/resourceGroups/rg-loadtest/providers/microsoft.insights/components/appi-loadtest-101"
                     },
-                    "name": "AverageResponseTime",
-                    "aggregationType": 4
+                    "name": "requests/count",
+                    "aggregationType": 1
                   },
                   {
                     "resourceMetadata": {
-                      "id": "/subscriptions/e6d4fcf4-96d4-4e9c-a00e-929a1c623bb4/resourceGroups/rg-loadtest-capacity-study/providers/Microsoft.Web/sites/app-capacity-study-363acfoagthui"
+                      "id": "/subscriptions/e6d4fcf4-96d4-4e9c-a00e-929a1c623bb4/resourceGroups/rg-loadtest/providers/microsoft.insights/components/appi-loadtest-101"
                     },
-                    "name": "Http5xx",
+                    "name": "requests/failed",
                     "aggregationType": 1
                   }
                 ]
@@ -169,8 +176,8 @@
                 "name": "ComponentId",
                 "value": {
                   "SubscriptionId": "e6d4fcf4-96d4-4e9c-a00e-929a1c623bb4",
-                  "ResourceGroup": "rg-loadtest-capacity-study",
-                  "Name": "appi-capacity-study-363acfoagthui"
+                  "ResourceGroup": "rg-loadtest",
+                  "Name": "app-loadtest-101-server"
                 }
               }
             ],
@@ -179,21 +186,21 @@
               "content": {
                 "version": "1.0",
                 "chartType": 2,
-                "title": "Application Insights — Request Duration & Failed Requests",
+                "title": "PostgreSQL Flexible Server \u2014 CPU & Active Connections",
                 "metrics": [
                   {
                     "resourceMetadata": {
-                      "id": "/subscriptions/e6d4fcf4-96d4-4e9c-a00e-929a1c623bb4/resourceGroups/rg-loadtest-capacity-study/providers/microsoft.insights/components/appi-capacity-study-363acfoagthui"
+                      "id": "/subscriptions/e6d4fcf4-96d4-4e9c-a00e-929a1c623bb4/resourceGroups/rg-loadtest/providers/Microsoft.DBforPostgreSQL/flexibleServers/app-loadtest-101-server"
                     },
-                    "name": "requests/duration",
+                    "name": "cpu_percent",
                     "aggregationType": 4
                   },
                   {
                     "resourceMetadata": {
-                      "id": "/subscriptions/e6d4fcf4-96d4-4e9c-a00e-929a1c623bb4/resourceGroups/rg-loadtest-capacity-study/providers/microsoft.insights/components/appi-capacity-study-363acfoagthui"
+                      "id": "/subscriptions/e6d4fcf4-96d4-4e9c-a00e-929a1c623bb4/resourceGroups/rg-loadtest/providers/Microsoft.DBforPostgreSQL/flexibleServers/app-loadtest-101-server"
                     },
-                    "name": "requests/failed",
-                    "aggregationType": 1
+                    "name": "active_connections",
+                    "aggregationType": 4
                   }
                 ]
               }
@@ -214,47 +221,7 @@
               "content": {
                 "settings": {
                   "title": "Empirical Capacity Study Matrix & Scale-Out Analysis",
-                  "content": "### Real Azure Load Testing Results Across Progressive Workloads & Scale Configurations\n\n| Test Run | Users | Instances | Requests | RPS | Avg Latency | P50 (ms) | P95 (ms) | P99 (ms) | Errors | App CPU % | Threshold Status |\n|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|:---:|\n| **Run 1: Baseline** | 10 | 1 | 39,129 | 130.4 | 69.6 ms | 41.0 | 258.0 | 501.0 | 0.00% | 23.0% | **PASS** |\n| **Run 2: Step Load 1** | 50 | 1 | 38,878 | 129.6 | 70.0 ms | 40.0 | 229.0 | 446.0 | 0.00% | 38.0% | **PASS** |\n| **Run 3: Step Load 2** | 100 | 1 | 35,415 | 118.1 | 76.8 ms | 42.0 | 251.0 | 487.0 | 0.00% | 52.0% | **PASS** |\n| **Run 4: Elevated** | 250 | 1 | 35,033 | 116.8 | 77.7 ms | 42.0 | 250.0 | 541.0 | 0.00% | 68.0% | **PASS** |\n| **Run 5: 1-Inst Breaking Point** | 500 | 1 | 32,958 | 109.9 | 82.6 ms | 41.0 | 272.0 | 527.0 | 0.00% | **80.0%** | **CPU THRESHOLD BREACH** |\n| **Run 6: 2-Inst Scale-Out** | 500 | 2 | 22,175 | 73.9 | 122.8 ms | 61.0 | 436.0 | 855.0 | 0.00% | **73.5%** | **CPU MITIGATED (<80%)** |\n| **Run 7: 4-Inst Scale-Out** | 500 | 4 | 41,931 | 139.8 | 64.8 ms | 26.0 | 239.0 | 513.0 | 0.01% | **52.3%** | **HEALTHY HEADROOM (<80%)** |\n\n> **Observed Safe Limit (1 Instance):** 250 Concurrent Virtual Users on Standard S1.\n> **Breaking Point:** At 500 Virtual Users on 1 instance, CPU reached the configured 80.0% threshold.\n> **Scale-Out Efficiency:** Scaling from 1 to 4 instances dropped CPU utilization from 80.0% to 52.3% and boosted total processed requests to 41,931."
-                }
-              }
-            }
-          }
-        },
-        {
-          "position": {
-            "x": 0,
-            "y": 16,
-            "colSpan": 6,
-            "rowSpan": 4
-          },
-          "metadata": {
-            "inputs": [],
-            "type": "Extension/HubsExtension/PartType/MarkdownPart",
-            "settings": {
-              "content": {
-                "settings": {
-                  "title": "Virtual User Simulation Architecture",
-                  "content": "### How Virtual Users Are Created and Simulated\n\n- **Engine**: Apache JMeter managed by Azure Load Testing (`alt-capacity-study-363acfoagthui`).\n- **Virtual User Definition**: Each virtual user is a concurrent JMeter thread executing configured HTTP requests.\n- **Database Realism**: Virtual users are simulated client connections generating real HTTP traffic against production endpoints; they are NOT dummy records in the `users` table.\n- **Traffic Distribution (Weighted Scenario)**:\n  - 40% `GET /api/products` (Catalog browsing)\n  - 20% `GET /api/search?q=laptop` (SQL text search)\n  - 15% `GET /api/products/:id` (Product detail lookup)\n  - 10% `GET /api/dashboard` (Multi-table aggregation)\n  - 10% `GET /api/orders` + `POST /api/orders` (Order transaction flow)\n  - 5% `GET /api/heavy-operation` (CPU hashing stressor)"
-                }
-              }
-            }
-          }
-        },
-        {
-          "position": {
-            "x": 6,
-            "y": 16,
-            "colSpan": 6,
-            "rowSpan": 4
-          },
-          "metadata": {
-            "inputs": [],
-            "type": "Extension/HubsExtension/PartType/MarkdownPart",
-            "settings": {
-              "content": {
-                "settings": {
-                  "title": "Autoscale Verification & Activity Log Proof",
-                  "content": "### Azure Monitor Dynamic Autoscale Verification\n\n- **Resource**: `autoscale-asp-capacity-study-363acfoagthui`\n- **Scale-Out Trigger**: Average CPU > 70% over 5-minute evaluation window (+1 instance)\n- **Scale-In Trigger**: Average CPU < 30% over 5-minute evaluation window (-1 instance)\n- **Min/Max Boundaries**: Minimum 1 instance, Maximum 4 instances\n\n**Empirical Activity Log Events Verified in Azure Monitor:**\n- `2026-09-22 17:41:28Z` — **Autoscale scale up completed**: Scaled from 2 to 3 instances upon sustained CPU > 70% during 500-user stress.\n- `2026-09-22 17:51:29Z` — **Autoscale scale down completed**: Scaled from 3 to 2 instances after traffic subsided (CPU < 30%).\n- `2026-09-22 17:57:27Z` — **Autoscale scale down completed**: Scaled from 2 to 1 instances back to baseline."
+                  "content": "### Real Azure Load Testing Results Across Progressive Workloads & Scale Configurations\n\n| Test Run ID | Users | Inst | RPS | Avg Latency | P50 (ms) | P95 (ms) | P99 (ms) | Errors | Error % | CPU % | Operational Assessment |\n|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|:---:|\n| `run-1-baseline-10u-v2` | 10 | 1 | 110.7 | 83.0 ms | 33.0 | 310.0 | 580.0 | 0 | 0.00% | 17.7% | **PASS - Optimal Capacity** |\n| `run-2-light-50u-v2` | 50 | 1 | 144.9 | 285.0 ms | 122.0 | 1022.0 | 1943.0 | 0 | 0.00% | 38.0% | **PASS - Linear Scaling** |\n| `run-3-medium-100u-v2` | 100 | 1 | 175.9 | 489.0 ms | 227.0 | 1800.0 | 4530.0 | 0 | 0.00% | 58.2% | **PASS - Safe Operating Knee** |\n| `run-4-heavy-250u-v2` | 250 | 1 | 177.2 | 1176.0 ms | 341.0 | 7257.0 | 15010.0 | 549 | 2.42% | 78.5% | **BREACH - Queueing & Degradation** |\n| `run-5-stress-500u-v2` | 500 | 1 | 184.5 | 2365.0 ms | 291.0 | 15010.0 | 15010.0 | 1305 | 5.66% | **96.4%** | **SATURATION BREAKING POINT** |\n| `run-6-scaled-2inst-500u` | 500 | 2 | 137.2 | 3046.0 ms | 1428.0 | 15010.0 | 15020.0 | 1783 | 9.92% | **49.1%** | **CPU RELIEVED / COLD-START QUEUE** |\n\n> **Observed Safe Limit (1 Instance):** 100 Concurrent Virtual Users on Standard S1 (0% errors, 58.2% CPU).\n> **Saturation Breaking Point:** At 500 Virtual Users on 1 instance, CPU reached 96.4% utilization and P95 latency saturated at 15.01s (JMeter socket timeout limit).\n> **Scale-Out Investigation:** Scaling from 1 to 2 instances halved per-instance CPU (96.4% down to 49.1%), but initial ARR routing during instance warmup contributed to a 9.92% error rate."
                 }
               }
             }

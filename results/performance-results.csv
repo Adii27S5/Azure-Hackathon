@@ -1,0 +1,7 @@
+run_id,users,instances,rps,average_latency_ms,p50_ms,p95_ms,p99_ms,peak_latency_ms,errors,error_percentage,cpu_percentage,memory_percentage,database_status,assessment
+run-1-baseline-10u-v2,10,1,110.67,83.0,33.0,310.0,580.0,2240.0,0,0.0,17.7,42.1,Connected (Normal),PASS - Optimal Capacity
+run-2-light-50u-v2,50,1,144.91,285.0,122.0,1022.0,1943.0,5390.0,0,0.0,38.0,51.4,Connected (Normal),PASS - Optimal Capacity
+run-3-medium-100u-v2,100,1,175.91,489.0,227.0,1800.0,4530.0,13170.0,0,0.0,58.2,63.8,Connected (Normal),PASS - Optimal Capacity
+run-4-heavy-250u-v2,250,1,177.15,1176.0,341.0,7257.0,15010.0,15030.0,549,2.42,78.5,72.3,Connected (Normal),BREACH - Queueing & Degradation
+run-5-stress-500u-v2,500,1,184.54,2365.0,291.0,15010.0,15010.0,15040.0,1305,5.66,96.4,84.7,Connected (Normal),SATURATION BREAK - CPU Compute Bottleneck
+run-6-scaled-2inst-500u,500,2,137.22,3046.0,1428.0,15010.0,15020.0,15040.0,1783,9.92,49.1,61.2,Connected (Normal),"INVESTIGATION - CPU Relieved (49.1%), Elevated Errors (9.91%)"
