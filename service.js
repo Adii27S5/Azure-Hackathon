@@ -12,6 +12,9 @@ module.exports = app;
 module.exports.startServer = startServer;
 
 if (require.main === module) {
-  const PORT = process.env.PORT || 3000;
-  startServer(PORT);
+  const PORT = process.env.PORT || 8080;
+  startServer(PORT).catch(err => {
+    console.error('Fatal error starting server:', err);
+    process.exit(1);
+  });
 }

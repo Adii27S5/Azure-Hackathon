@@ -3,6 +3,16 @@
 
 This guide provides the exact click-by-click instructions in the **Azure Cloud Portal** (`https://portal.azure.com`) to execute all 17 phases of the project with real Azure resources.
 
+> [!NOTE]
+> **Active Verified Hackathon Environment**:
+> - **Resource Group**: `rg-loadtest` (Central India)
+> - **App Service**: `app-loadtest-101` (`https://app-loadtest-101-byh7hsbwbyemh7bg.centralindia-01.azurewebsites.net`)
+> - **App Service Plan**: `plan-loadtest` (Standard S1, Autoscale 1-4 instances)
+> - **Database**: `app-loadtest-101-server` (Azure Database for PostgreSQL Flexible Server, VNet integrated)
+> - **Load Testing Engine**: `alt-loadtest-101` (Test: `capacity-study-test`)
+> - **Application Insights**: `appi-loadtest-101`
+> - **Status**: 100% Deployed, Verified, and Benchmark Tested.
+
 ---
 
 ## Pre-requisites

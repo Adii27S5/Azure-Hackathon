@@ -10,17 +10,17 @@
         <collectionProp name="Arguments.arguments">
           <elementProp name="APP_HOST" elementType="Argument">
             <stringProp name="Argument.name">APP_HOST</stringProp>
-            <stringProp name="Argument.value">${__P(app_host, app-capacity-study.azurewebsites.net)}</stringProp>
+            <stringProp name="Argument.value">${__groovy(System.getenv(&apos;app_host&apos;) ?: props.get(&apos;app_host&apos;) ?: &apos;app-loadtest-101-byh7hsbwbyemh7bg.centralindia-01.azurewebsites.net&apos;)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="APP_PORT" elementType="Argument">
             <stringProp name="Argument.name">APP_PORT</stringProp>
-            <stringProp name="Argument.value">${__P(app_port, 443)}</stringProp>
+            <stringProp name="Argument.value">${__groovy(System.getenv(&apos;app_port&apos;) ?: props.get(&apos;app_port&apos;) ?: &apos;443&apos;)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="APP_PROTOCOL" elementType="Argument">
             <stringProp name="Argument.name">APP_PROTOCOL</stringProp>
-            <stringProp name="Argument.value">${__P(app_protocol, https)}</stringProp>
+            <stringProp name="Argument.value">${__groovy(System.getenv(&apos;app_protocol&apos;) ?: props.get(&apos;app_protocol&apos;) ?: &apos;https&apos;)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>
@@ -33,10 +33,10 @@
           <boolProp name="LoopController.continue_forever">false</boolProp>
           <intProp name="LoopController.loops">-1</intProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">${__P(threads, 10)}</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">${__P(rampup, 60)}</stringProp>
+        <stringProp name="ThreadGroup.num_threads">${__groovy(System.getenv(&apos;threads&apos;) ?: props.get(&apos;threads&apos;) ?: &apos;10&apos;)}</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">${__groovy(System.getenv(&apos;rampup&apos;) ?: props.get(&apos;rampup&apos;) ?: &apos;20&apos;)}</stringProp>
         <boolProp name="ThreadGroup.scheduler">true</boolProp>
-        <stringProp name="ThreadGroup.duration">${__P(duration, 300)}</stringProp>
+        <stringProp name="ThreadGroup.duration">${__groovy(System.getenv(&apos;duration&apos;) ?: props.get(&apos;duration&apos;) ?: &apos;120&apos;)}</stringProp>
         <stringProp name="ThreadGroup.delay">0</stringProp>
       </ThreadGroup>
       <hashTree>

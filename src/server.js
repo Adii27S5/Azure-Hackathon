@@ -303,20 +303,21 @@ app.get('/api/heavy-operation', (req, res) => {
 });
 
 async function startServer(port = PORT) {
-  try {
-    await initSchema();
-    await seed();
-  } catch (err) {
-    console.error('Failed to initialize database during startup:', err);
-  }
-
   return new Promise((resolve, reject) => {
-    const server = app.listen(port, () => {
+    const server = app.listen(port, async () => {
       const actualPort = server.address().port;
       console.log(`=======================================================`);
       console.log(`Azure Capacity Study Web App running on port ${actualPort}`);
       console.log(`Health endpoint: http://localhost:${actualPort}/health`);
       console.log(`=======================================================`);
+      
+      try {
+        await initSchema();
+        await seed();
+      } catch (err) {
+        console.error('[DB] Background initialization warning:', err.message);
+      }
+      
       resolve(server);
     });
     server.on('error', reject);

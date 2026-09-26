@@ -5,7 +5,7 @@ description: "Hackathon 24CC3046-P056 Capacity Study Load Test"
 engineInstances: 1
 env:
   - name: app_host
-    value: "app-capacity-study-363acfoagthui.azurewebsites.net"
+    value: "app-loadtest-101-byh7hsbwbyemh7bg.centralindia-01.azurewebsites.net"
   - name: app_port
     value: "443"
   - name: app_protocol
